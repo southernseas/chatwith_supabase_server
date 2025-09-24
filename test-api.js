@@ -1,8 +1,7 @@
 // Test script for the Next.js Supabase API
 // Run with: node test-api.js
-
-const API_BASE_URL = 'http://localhost:3000/api' // Change to your deployed URL
-
+//const API_BASE_URL = 'http://localhost:3000/api' // Change to your deployed URL
+const API_BASE_URL = 'https://chatwith-supabase-server.vercel.app/api' // Change to your deployed URL
 async function testNotificationAPI() {
   console.log('🧪 Testing Notification API...\n')
   

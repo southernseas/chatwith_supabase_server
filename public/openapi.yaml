@@ -1,0 +1,415 @@
+openapi: 3.0.3
+info:
+  title: ChatWith Notifications API
+  description: |
+    A Next.js API server for managing notifications with Supabase integration.
+    This API allows you to create and retrieve notification records from the chatwith_notifications table.
+  version: 1.0.0
+  contact:
+    name: API Support
+    url: https://github.com/southernseas/chatwith_supabase_server
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3000
+    description: Development server
+  - url: https://chatwith-supabase-server.vercel.app
+    description: Production server (replace with your Vercel URL)
+
+paths:
+  /api/notifications:
+    post:
+      summary: Create a new notification
+      description: |
+        Creates a new notification record in the chatwith_notifications table.
+        All fields are required and will be validated before insertion.
+      operationId: createNotification
+      tags:
+        - Notifications
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationRequest'
+            examples:
+              basic_notification:
+                summary: Basic notification example
+                value:
+                  lastname: "Smith"
+                  firstname: "John"
+                  email: "john.smith@example.com"
+                  subject: "Support Request"
+                  details: "I need help with my account settings"
+              support_ticket:
+                summary: Support ticket example
+                value:
+                  lastname: "Johnson"
+                  firstname: "Jane"
+                  email: "jane.johnson@company.com"
+                  subject: "Bug Report"
+                  details: "The login page is not working properly on mobile devices"
+      responses:
+        '201':
+          description: Notification created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationResponse'
+              examples:
+                success_response:
+                  summary: Successful creation
+                  value:
+                    success: true
+                    message: "Notification created successfully"
+                    data:
+                      id: "123e4567-e89b-12d3-a456-426614174000"
+                      lastname: "Smith"
+                      firstname: "John"
+                      email: "john.smith@example.com"
+                      subject: "Support Request"
+                      created_at: "2024-01-15T10:30:00.000Z"
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                validation_error:
+                  summary: Validation failed
+                  value:
+                    success: false
+                    error: "Validation failed"
+                    message: "Invalid input data"
+                    details:
+                      - "lastname is required and must be a non-empty string"
+                      - "email must be a valid email address"
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                method_not_allowed:
+                  summary: Wrong HTTP method
+                  value:
+                    success: false
+                    error: "Method not allowed"
+                    message: "Only POST requests are allowed"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                server_error:
+                  summary: Database error
+                  value:
+                    success: false
+                    error: "Database error"
+                    message: "Failed to insert notification data"
+                    details: "Connection timeout"
+
+  /api/notifications/get:
+    get:
+      summary: Retrieve notifications
+      description: |
+        Retrieves notification records from the chatwith_notifications table.
+        Supports pagination and optional status filtering.
+      operationId: getNotifications
+      tags:
+        - Notifications
+      parameters:
+        - name: limit
+          in: query
+          description: Maximum number of records to return
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+          example: 10
+        - name: offset
+          in: query
+          description: Number of records to skip for pagination
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          example: 0
+        - name: status
+          in: query
+          description: Filter notifications by status (if status column exists)
+          required: false
+          schema:
+            type: string
+          example: "new"
+      responses:
+        '200':
+          description: Notifications retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationListResponse'
+              examples:
+                success_response:
+                  summary: Successful retrieval
+                  value:
+                    success: true
+                    message: "Notifications retrieved successfully"
+                    data:
+                      - id: "123e4567-e89b-12d3-a456-426614174000"
+                        created_at: "2024-01-15T10:30:00.000Z"
+                        firstname: "John"
+                        lastname: "Smith"
+                        email: "john.smith@example.com"
+                        subject: "Support Request"
+                        details: "I need help with my account"
+                        updated_at: null
+                      - id: "456e7890-e89b-12d3-a456-426614174001"
+                        created_at: "2024-01-15T09:15:00.000Z"
+                        firstname: "Jane"
+                        lastname: "Doe"
+                        email: "jane.doe@example.com"
+                        subject: "Feature Request"
+                        details: "Can you add dark mode support?"
+                        updated_at: null
+                    count: 2
+                    pagination:
+                      limit: 50
+                      offset: 0
+                      hasMore: false
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                method_not_allowed:
+                  summary: Wrong HTTP method
+                  value:
+                    success: false
+                    error: "Method not allowed"
+                    message: "Only GET requests are allowed"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                server_error:
+                  summary: Database error
+                  value:
+                    success: false
+                    error: "Database error"
+                    message: "Failed to fetch notifications"
+                    details: "Connection timeout"
+
+components:
+  schemas:
+    NotificationRequest:
+      type: object
+      required:
+        - lastname
+        - firstname
+        - email
+        - subject
+        - details
+      properties:
+        lastname:
+          type: string
+          description: Last name of the person submitting the notification
+          minLength: 1
+          example: "Smith"
+        firstname:
+          type: string
+          description: First name of the person submitting the notification
+          minLength: 1
+          example: "John"
+        email:
+          type: string
+          format: email
+          description: Email address of the person submitting the notification
+          example: "john.smith@example.com"
+        subject:
+          type: string
+          description: Subject line of the notification
+          minLength: 1
+          example: "Support Request"
+        details:
+          type: string
+          description: Detailed message or description
+          minLength: 1
+          example: "I need help with my account settings"
+
+    NotificationRecord:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the notification
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        lastname:
+          type: string
+          description: Last name
+          example: "Smith"
+        firstname:
+          type: string
+          description: First name
+          example: "John"
+        email:
+          type: string
+          format: email
+          description: Email address
+          example: "john.smith@example.com"
+        subject:
+          type: string
+          description: Subject line
+          example: "Support Request"
+        details:
+          type: string
+          description: Detailed message
+          example: "I need help with my account settings"
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the notification was created
+          example: "2024-01-15T10:30:00.000Z"
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Timestamp when the notification was last updated
+          example: null
+
+    NotificationResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the operation was successful
+          example: true
+        message:
+          type: string
+          description: Human-readable message about the operation
+          example: "Notification created successfully"
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Unique identifier of the created notification
+              example: "123e4567-e89b-12d3-a456-426614174000"
+            lastname:
+              type: string
+              description: Last name
+              example: "Smith"
+            firstname:
+              type: string
+              description: First name
+              example: "John"
+            email:
+              type: string
+              format: email
+              description: Email address
+              example: "john.smith@example.com"
+            subject:
+              type: string
+              description: Subject line
+              example: "Support Request"
+            created_at:
+              type: string
+              format: date-time
+              description: Timestamp when the notification was created
+              example: "2024-01-15T10:30:00.000Z"
+
+    NotificationListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the operation was successful
+          example: true
+        message:
+          type: string
+          description: Human-readable message about the operation
+          example: "Notifications retrieved successfully"
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationRecord'
+          description: Array of notification records
+        count:
+          type: integer
+          description: Total number of records (for pagination)
+          example: 25
+        pagination:
+          type: object
+          properties:
+            limit:
+              type: integer
+              description: Maximum number of records per page
+              example: 50
+            offset:
+              type: integer
+              description: Number of records skipped
+              example: 0
+            hasMore:
+              type: boolean
+              description: Indicates if there are more records available
+              example: true
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Always false for error responses
+          example: false
+        error:
+          type: string
+          description: Error type or category
+          example: "Validation failed"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "Invalid input data"
+        details:
+          oneOf:
+            - type: string
+              description: Detailed error information
+              example: "Connection timeout"
+            - type: array
+              items:
+                type: string
+              description: Array of validation errors
+              example: ["lastname is required", "email must be valid"]
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for authentication (if implemented)
+
+tags:
+  - name: Notifications
+    description: Operations related to notification management
+    externalDocs:
+      description: Find out more about notifications
+      url: https://github.com/southernseas/chatwith_supabase_server
+
+externalDocs:
+  description: Find out more about this API
+  url: https://github.com/southernseas/chatwith_supabase_server
