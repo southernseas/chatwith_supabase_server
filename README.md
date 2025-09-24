@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Next.js Supabase API Server
 
 A Next.js API server for Vercel deployment that accepts notification data and inserts it into a Supabase table.
@@ -12,6 +11,30 @@ A Next.js API server for Vercel deployment that accepts notification data and in
 - ✅ Error handling
 - ✅ TypeScript support
 - ✅ Vercel deployment ready
+- ✅ OpenAPI 3.0 documentation
+
+## API Documentation
+
+### OpenAPI Specification
+
+This API is fully documented using OpenAPI 3.0 specification:
+
+- **YAML Format**: [`openapi.yaml`](./openapi.yaml)
+- **JSON Format**: [`openapi.json`](./openapi.json)
+
+You can use these files with tools like:
+- [Swagger Editor](https://editor.swagger.io/)
+- [Postman](https://www.postman.com/)
+- [Insomnia](https://insomnia.rest/)
+- [Redoc](https://redoc.ly/)
+
+### Interactive Documentation
+
+To view the API documentation interactively:
+
+1. **Swagger UI**: Copy the contents of `openapi.yaml` and paste into [Swagger Editor](https://editor.swagger.io/)
+2. **Redoc**: Use the `openapi.yaml` file with [Redoc CLI](https://github.com/Redocly/redoc-cli)
+3. **Postman**: Import the `openapi.json` file into Postman
 
 ## API Endpoints
 
@@ -67,6 +90,32 @@ Retrieves notification records with pagination.
 curl "https://your-domain.vercel.app/api/notifications/get?limit=10&offset=0"
 ```
 
+**Example Response:**
+```json
+{
+  "success": true,
+  "message": "Notifications retrieved successfully",
+  "data": [
+    {
+      "id": "123e4567-e89b-12d3-a456-426614174000",
+      "created_at": "2024-01-15T10:30:00.000Z",
+      "firstname": "John",
+      "lastname": "Smith",
+      "email": "john.smith@example.com",
+      "subject": "Support Request",
+      "details": "I need help with my account",
+      "updated_at": null
+    }
+  ],
+  "count": 1,
+  "pagination": {
+    "limit": 10,
+    "offset": 0,
+    "hasMore": false
+  }
+}
+```
+
 ## Setup Instructions
 
 ### 1. Environment Variables
@@ -91,14 +140,12 @@ CREATE TABLE chatwith_notifications (
   email VARCHAR(255) NOT NULL,
   subject TEXT NOT NULL,
   details TEXT NOT NULL,
-  status VARCHAR(50) DEFAULT 'new',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Create indexes for better performance
 CREATE INDEX idx_chatwith_notifications_email ON chatwith_notifications(email);
-CREATE INDEX idx_chatwith_notifications_status ON chatwith_notifications(status);
 CREATE INDEX idx_chatwith_notifications_created_at ON chatwith_notifications(created_at);
 ```
 
@@ -171,6 +218,55 @@ curl -X POST http://localhost:3000/api/notifications \
 # Test GET endpoint
 curl http://localhost:3000/api/notifications/get
 ```
-=======
-# chatwith_supabase_server
->>>>>>> 245a3e6f666c105dfd0cd60173181a310a43ff28
+
+## OpenAPI Documentation
+
+### Viewing the Documentation
+
+1. **Online**: Copy the contents of `openapi.yaml` and paste into [Swagger Editor](https://editor.swagger.io/)
+2. **Local**: Use tools like [Redoc CLI](https://github.com/Redocly/redoc-cli) to generate HTML documentation
+3. **Postman**: Import `openapi.json` for API testing
+
+### API Schema
+
+The OpenAPI specification includes:
+- Complete request/response schemas
+- Validation rules
+- Example requests and responses
+- Error handling documentation
+- Authentication schemes (for future implementation)
+
+## Repository Structure
+
+```
+nextjs-supabase-api/
+├── openapi.yaml              # OpenAPI specification (YAML)
+├── openapi.json              # OpenAPI specification (JSON)
+├── README.md                 # This documentation
+├── package.json              # Dependencies and scripts
+├── next.config.js            # Next.js configuration
+├── vercel.json               # Vercel deployment configuration
+├── env.example               # Environment variables template
+├── test-api.js               # API testing script
+├── lib/
+│   └── supabase.ts          # Supabase client configuration
+├── pages/api/
+│   ├── notifications.ts      # POST endpoint for creating notifications
+│   └── notifications/
+│       └── get.ts           # GET endpoint for retrieving notifications
+└── types/
+    └── index.ts             # TypeScript type definitions
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Update the OpenAPI specification if needed
+5. Test your changes
+6. Submit a pull request
+
+## License
+
+MIT License - see [LICENSE](./LICENSE) file for details.
