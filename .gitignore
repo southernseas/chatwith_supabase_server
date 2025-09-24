@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Dependencies
 node_modules/
 npm-debug.log*
@@ -62,8 +61,8 @@ jspm_packages/
 # Microbundle cache
 .rpt2_cache/
 .rts2_cache_cjs/
-.rts2_cache_es/
-.rts2_cache_umd/
+.rpt2_cache_es/
+.rpt2_cache_umd/
 
 # Optional REPL history
 .node_repl_history
@@ -98,29 +97,13 @@ jspm_packages/
 
 # TernJS port file
 .tern-port
-=======
-# Nestjs specific
+
+# Additional NestJS patterns (merged from remote)
 /dist
-/node_modules
-/build
 /tmp
-
-# Logs
-logs
-*.log
-npm-debug.log*
 pnpm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 lerna-debug.log*
-
-# dotenv environment variable files
-.env
-.env.development
-.env.test
-.env.production
 
 # temp directory
 .temp
 .tmp
->>>>>>> 245a3e6f666c105dfd0cd60173181a310a43ff28
