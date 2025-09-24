@@ -15,7 +15,7 @@ info:
 servers:
   - url: http://localhost:3000
     description: Development server
-  - url: https://your-app.vercel.app
+  - url: https://chatwith-supabase-server.vercel.app
     description: Production server (replace with your Vercel URL)
 
 paths:
