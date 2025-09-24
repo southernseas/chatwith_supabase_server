@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Dependencies
 node_modules/
 npm-debug.log*
@@ -97,3 +98,29 @@ jspm_packages/
 
 # TernJS port file
 .tern-port
+=======
+# Nestjs specific
+/dist
+/node_modules
+/build
+/tmp
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# dotenv environment variable files
+.env
+.env.development
+.env.test
+.env.production
+
+# temp directory
+.temp
+.tmp
+>>>>>>> 245a3e6f666c105dfd0cd60173181a310a43ff28

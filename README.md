@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Next.js Supabase API Server
 
 A Next.js API server for Vercel deployment that accepts notification data and inserts it into a Supabase table.
@@ -170,3 +171,6 @@ curl -X POST http://localhost:3000/api/notifications \
 # Test GET endpoint
 curl http://localhost:3000/api/notifications/get
 ```
+=======
+# chatwith_supabase_server
+>>>>>>> 245a3e6f666c105dfd0cd60173181a310a43ff28
