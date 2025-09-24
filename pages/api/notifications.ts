@@ -107,8 +107,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       email: data.email.trim().toLowerCase(),
       subject: data.subject.trim(),
       details: data.details.trim(),
-      created_at: new Date().toISOString(),
-      status: 'new' // Default status
+      created_at: new Date().toISOString()
     }
     
     console.log('Inserting notification data:', notificationData)
