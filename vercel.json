@@ -5,6 +5,9 @@
     },
     "pages/api/notifications/get.ts": {
       "maxDuration": 30
+    },
+    "pages/api/openapi.ts": {
+      "maxDuration": 10
     }
   },
   "headers": [
@@ -24,6 +27,25 @@
           "value": "Content-Type, Authorization"
         }
       ]
+    },
+    {
+      "source": "/openapi.yaml",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/x-yaml"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/openapi.yaml",
+      "destination": "/api/openapi"
     }
   ]
 }
